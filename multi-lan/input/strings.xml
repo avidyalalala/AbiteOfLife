@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">云帐号</string>
+    <string name="next">下一步</string>
+    <string name="previous">上一步</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+
+    <string name="logout_title">登出帐号</string>
+    <string name="logout_title_text">正在登出, 请稍候...</string>
+    <string name="checkphonenun">正在验证手机号码...</string>
+    <string name="netbusymills">运营商网络繁忙，请稍等
+        <xliff:g id="busymills">%d</xliff:g>秒
+    </string>
+    <string name="SendMsgError">短信发送失败，请重试</string>
+    <string name="comfirm_logout">确认登出</string>
+    <string name="logout_hint">温馨提醒：登出帐号后将暂时无法使用相关云服务，如同步、备份等</string>
+    <string name="deletedata_logout_tip">将会删除手机所有联系人、便签</string>
+    <string name="leftdata_logout_default">保留数据（默认）</string>
+    <string name="deletedata_logout">删除数据</string>
+    <string name="agree">同意</string>
+    <string name="reg_bindphone_desc">下面将引导您使用手机号快速注册淘宝帐号</string>
+    <string name="reg_bindphone_warn">通信运营商可能对用于验证手机号的短信收费0.1元,无其他信息费。</string>
+    <string name="reg_bindphone_other_link">使用其他手机号</string>
+    <string name="reg_success_desc">此帐号可用于阿里巴巴旗下的YunOS、淘宝、支付宝、来往、虾米音乐、高德等服务。淘宝业务需进一步完善帐号信息，具体请打开淘宝客户端或登录淘宝网（http://www.taobao.com）。</string>
+    <string name="reg_retrieve_password">更多帐号信息与设置请访问支付宝网站 (www.alipay.com)</string>
+    <string name="reg_finish">完成</string>
+    <string name="reg_success">注册成功</string>
+    <string name="reg_input_pass">请输入您的密码</string>
+    <string name="reg_input_repass">请再次输入密码</string>
+    <string name="reg_pass_invalid">密码长度为6~20位字符</string>
+
+    <string name="yunos_login">登录</string>
+    <string name="login_out_account">登出帐号</string>
+    <string name="yunos_login_act_alipayhint">手机号/邮箱</string>
+    <string name="yunos_login_pwd">登录密码</string>
+    <string name="yunos_account_import_loading">正在查找...</string>
+    <string name="yunos_account_term">YunOS服务条款</string>
+    <string name="yunos_import_aliyun_title">导入云帐号数据</string>
+    <string name="yunos_import_aliyun_text1">您可以将以下云帐号数据导入到当前帐号中</string>
+    <string name="yunos_act_and_pwd_null">帐号和密码不能为空</string>
+    <string name="yunos_act_null">帐号不能为空</string>
+    <string name="yunos_pwd_null">密码不能为空</string>
+    <string name="yunos_act_or_pwd_error">您的帐号或密码错误</string>
+    <string name="reg_revice_msg">重新获取短信</string>
+    <string name="yunos_act_or_pwd_error_times">您的帐号或密码错误,您还有<xliff:g id="login_times">%d</xliff:g>次尝试机会</string>
+    <string name="yunos_account_manager">帐号管理</string>
+    <string name="import_data_from_cloudaccount">导入云帐号数据</string>
+    <string name="freeze_five_time_tip">您的帐号由于密码输错次数达到上限，已被锁定。请查收短信或邮件解锁，或3小时后重试。</string>
+    <string name="yunos_freeze_import_tip">您的帐号由于密码输错次数达到上限，已被锁定。请在半小时后重试。</string>
+    <string name="reg_validate_error">验证码错误,请重新输入</string>
+    <string name="reg_validate_invalid">验证码已失效，请重新获取</string>
+    <string name="reg_validate_empty_msg">验证码不能为空</string>
+    <string name="reg_sending_msg">正在发送短信...</string>
+    <string name="reg_checking_validatecode">正在验证验证码...</string>
+    <string name="reg_register">正在注册帐号...</string>
+    <string name="reg_repass_error">您两次输入的密码不一致</string>
+    <string name="reg_input_validatecode_hint">输入校验码</string>
+    <string name="reg_input_number_hint">请输入手机号</string>
+    <string name="reg_error">注册失败</string>
+    <string name="reg_code_send_frequently">您短时间内获取短信次数过多，请24小时之后再试。</string>
+    <string name="reg_error_msg">抱歉,您当前手机号无法在本流程中完成注册,请访问淘宝网站(www.taobao.com)或换一个手机号注册。</string>
+    <string name="yunos_have_know_tip">知道了</string>
+    <string name="reg_mobile_number_error">输入的手机号码有误</string>
+    <string name="yunos_change_account"><u>切换帐号</u></string>
+    <string name="yunos_import_in_progress">正在导入数据</string>
+    <string name="yunos_import_success">恭喜，导入成功</string>
+    <string name="yunos_import_failed">数据导入失败</string>
+    <string name="yunos_reimport">重试</string>
+    <string name="yunos_import_ok">完成</string>
+    <string name="yunos_hadimport_ok">确定</string>
+    <string name="yunos_data_hadimported_tip">该云帐号数据已经导出到其他帐号中，不能被再次导出。</string>
+    <string name="reg_validate_number_msg">正在验证手机号码是否可以注册</string>
+    <string name="reg_send_error">验证码发送失败</string>
+    <string name="reg_current_number">使用当前手机号</string>
+    <string name="change_validate_code"><u>换一张</u></string>
+    <string name="yunos_login_verify_tip">验证码不能为空</string>
+    <string name="yunos_import_account_tip">如果您有云帐号，可以导入数据到当前帐号中</string>
+    <string name="ask_connect_wifi">当前无网络连接，前去设置？</string>
+    <string name="reg_title_msg">注册</string>
+    <string name="yunos_login_default_failed_tip">登录失败</string>
+    <string name="yunos_login_failed_net_tip">网络连接异常</string>
+    <string name="yunos_login_old_account">手机号/云帐号名</string>
+    <string name ="yunos_register_upper_msg">密码不能为纯大写字母</string>
+    <string name ="yunos_register_lower_msg">密码不能为纯小写字母</string>
+    <string name ="yunos_register_number_msg">密码不能为纯数字</string>
+    <string name ="yunos_register_symbol_msg">密码不能为纯符号</string>
+    <string name ="yunos_register_notchar_msg">密码不能包含非法字符</string>
+    <string name ="yunos_input_validatecode_msg">验证码已自动填入</string>
+
+    <!-- Login Resource -->
+    <string name="yunos_checking">正在验证……</string>
+    <string name="yunos_help_title">帮助</string>
+    <string name="yunos_os_login_title">登录云帐号</string>
+    <string name="confirm_skip_btn">跳过</string>
+
+    <!-- Account2.0 Resources -->
+    <string name="reg_inputnumber_desc">使用手机号快速注册淘宝帐号</string>
+    <string name="reg_success_desc2"></string>
+    <string name="ali_pass">使用淘宝帐号登录</string>
+    <string name="free_register">免费注册</string>
+    <string name="alipay_login">支付宝帐号登录</string>
+    <string name="existed_account">您注册过以下帐号，请直接登录</string>
+    <string name="confirm_import_data">导入云帐号数据后，您当前帐号中的数据将被覆盖，您确定要导入吗?</string>
+    <string name="alipass_notice">已为您的支付宝帐号生成淘宝帐号</string>
+    <string name="alipass_notice_desc">YunOS帐号已经全面升级至淘宝帐号，请您直接使用淘宝帐号登录。</string>
+    <string name="account_is_locked">帐号已锁定</string>
+    <string name="login_by_alipay">使用支付宝帐号登录</string>
+    <string name="yunos_login_act_passhint">淘宝会员名/手机号/邮箱</string>
+    <string name="login_by_matched_taobao">已匹配到您的淘宝帐号</string>
+    <string name="alipay_exception">没有匹配到对应的淘宝帐号，请更换淘宝帐号登录。</string>
+    <string name="alipass_account">帐号</string>
+    <string name="alipass_reg_success">淘宝帐号注册成功</string>
+
+    <!-- Multi sim cards translation -->
+    <string name="sim_register_1">Sim1</string>
+    <string name="sim_register_2">Sim2</string>
+    <string-array name="register_sim_cards">
+        <item>@string/sim_register_1</item>
+        <item>@string/sim_register_2</item>
+    </string-array>
+    <string name="tao_account_tip">检测到您的淘宝帐号（<xliff:g id="tao_series_account">%s</xliff:g>）</string>
+    <string name="tao_account_atonce">快速登录</string>
+    <string name="login_other_account">使用其它帐号登录</string>
+    <string name="tao_sso_logining">正在登录......</string>
+    <string name="import_another_yunos_account">使用其他云帐号</string>
+    <string name="help_file">为了向您提供更快捷的服务，YunOS帐号已全面升级至淘宝帐号体系。您可以直接用淘宝帐号登录并使用YunOS提供的各项服务。\n\n原云帐号如何操作？\nYunOS已不再支持云帐号登录，请登录淘宝帐号，第一次登录后会根据您绑定的手机号码自动识别并引导您将云帐号数据迁移到淘宝帐号。\n\n原支付宝帐号如何登录？\n您可以在页面上“支付宝帐号登录”入口直接登录，系统会自动识别关联的淘宝帐号并引导您使用淘宝帐号登录，并自动快速、安全完成数据迁移工作。\n\n忘记密码如何找回？\n请根据您的帐号类型前往对应的网站进行找回操作：\n淘宝帐号密码找回：www.taobao.com\n支付宝帐号密码找回：www.alipay.com\n\n如需更多帮助请访问：bbs.yunos.com\n\nYunOS\n</string>
+    <string name="hint_login_again">登录状态失效，请重新登录</string>
+    <string name="alipass_mapping_taobao_tip">淘宝帐号全面支持OS系统服务，畅享阿里生活服务</string>
+    <string name="input_verification_code_tip">请查看短信，获取注册验证码</string>
+    <string name="reg_verfication_code_hint">请输入验证码</string>
+    <string name="wifi_setting">设置</string>
+    <string name="auth_management">帐号授权</string>
+    <string name="logout_tip">您需要再次输入登录密码，以关闭“手机防盗”功能</string>
+    <string name="yunos_validate_password_error">密码错误，请重新输入</string>
+    <string name="ssl_time_error">证书验证失败，请检查您的系统时间</string>
+    <string name="password_validating">正在验证密码...</string>
+    <string name="not_support_yunos">您的帐号不支持激活YunOS服务，请更换帐号。</string>
+    <string name="yunos_validate_password_error_times">您的密码错误,您还有<xliff:g id="try_times">%d</xliff:g>次尝试机会</string>
+    <string name="login_exist_taobao_account_error">您曾使用（<xliff:g id="identify">%s</xliff:g>）在YunOS注册登录过帐号（<xliff:g id="exist_name">%s</xliff:g>），请使用该帐号登录。</string>
+    <string name="forget_password">找回密码</string>
+    <string name="help_info_msg">当前无网络连接，请联网再试！</string>
+    <string name="same_account_name">淘宝帐号：<xliff:g id="same_name">%s</xliff:g>\n密码：与支付宝帐号密码相同</string>
+    <string name="change_account">更换帐号登录</string>
+    <string name="password_rule">密码为6-20位，至少字母、符号或数字任意两种组合</string>
+    <string name="reg_account">帐号：<xliff:g id="account_name">%s</xliff:g></string>
+    <string name="connection_title">网络未连接</string>
+    <string name="confirm_skip">确认跳过</string>
+    <string name="msg_confirm_skip">如果之前您使用过YunOS手机的系统配置备份功能，此处登录会帮您恢复之前的系统配置。跳过则无法恢复。</string>
+    <string name="back_to_login">返回登录</string>
+    <string name="checking_phonenum">手机号码验证中...</string>
+    <string name="switch_account_confirm">切换帐号之前，您需要对本登录状态失效的帐号做登出，以便确认一些安全和数据同步选项</string>
+    <string name="logout_success">登出成功</string>
+    <string name="logout_success_login">登出成功，请登录</string>
+    <string name="validate_token">正在验证登录状态</string>
+    <string name="cancel_register">确认退出注册</string>
+    <string name="yunos_login_title">登录YunOS</string>
+    <string name="taobao_account">淘宝帐号</string>
+</resources>
