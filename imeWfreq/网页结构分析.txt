@@ -1,0 +1,149 @@
+知乎
+问答页面
+http://www.zhihu.com/question/26797641
+<title>
+<div id="zh-question-answer-wrap"></div>
+
+用户主页
+http://www.zhihu.com/people/yang-tian-nan
+<div id="zh-profile-activity-wrap"></div>
+
+某一个话题讨论
+http://www.zhihu.com/topic/19554426
+<div id="zh-topic-top-page-list"></div>
+
+collection
+http://www.zhihu.com/collection/25501883
+<div id="zh-single-list-page-wrap"></div>
+
+水木
+https://www.newsmth.net 根据1月23号的 baseParser统计，
+100%是空页面  99189 个文件
+
+http://www.newsmth.net 
+讨论页：
+http://www.newsmth.net/nForum/#!article/Geography/166424?au=Oxford2012
+http://www.newsmth.net/nForum/#!article/Picture/520233?p=2
+
+<section id="main" class="corner">
+	<table class="article">
+		<p>...
+	<table class="article">
+		<p>...
+</section>		
+取 id="main" 下的所有p节点
+
+帖子页
+http://www.newsmth.net/bbstcon.php?board=WorkLife&gid=796837
+
+竞猜页
+http://www.newsmth.net/guess/vote.php?guessid=67&matchid=132
+不提取
+
+精华版
+http://www.newsmth.net/bbsanc.php?path=/groups/talk.faq/AutoWorld/asdf/top10/M.1324635501.30
+扔掉，因为页面内容是js存进去的，抓到的页面是空
+
+
+
+-----------------------------------------------------------------------------------------------
+大众点评
+从baseParser来看，点评差不多有一半多的页面是空的
+
+店铺页面
+电影
+http://www.dianping.com/shop/5298871
+餐厅
+http://www.dianping.com/shop/8843228
+<div class="main"> 按此节点提取
+	基本介绍
+	<div id="basic-info" class="basic-info default nug_shop_ab_pv-a">
+	
+	<div id="stop-info" class="stop-info J-park-more Hide">
+	推荐菜/影院放映影片
+	<div id="shop-tabs" class="mod">
+	用户评论
+	<div id="comment" class="mod comment">
+
+店铺页面所有评论list
+http://www.dianping.com/shop/3498910/review_more
+<div class="main">
+
+店铺地图（下面有所有用户评论）
+http://www.dianping.com/shop/5462062/map
+<div class="main">
+
+
+
+店铺页面所有评论list 的单个评论 详情页面
+http://www.dianping.com/review/47114536
+<div class="content_a">
+无class="main"
+
+
+用户主页
+http://www.dianping.com/member/21951219
+用户的主要点评
+<div class="main">
+
+	
+分类查询	
+by 区域+类目
+http://www.dianping.com/search/category/19/80/g5834r16763o8b1
+by 菜品	
+http://www.dianping.com/dish/12000
+	
+<div id="shop-all-list">
+无 class="main"
+
+
+
+图片列表页  忽略，只有图片
+http://www.dianping.com/photos/5097778/photocenter
+店铺相册页面  忽略，只有图片
+http://www.dianping.com/shop/9601864/photos
+用户上传照片  忽略，只有图片
+http://www.dianping.com/photos/57941836/member
+
+
+
+微博
+
+微博文章页
+http://weibo.com/p/1001603799617920708785
+content_divs=soup.findAll("div",{"class":"WBA_content"})
+
+微博个人列表页
+http://weibo.com/u/3843608942
+http://weibo.com/509896971#_rnd1421924109540
+
+冗余数据
+2014-12-13 08:44 来自 微博 weibo.com
+
+
+nemo@localhost:~/imeWfreq/signals$ grep -r finish parser.log.test.1635.20150116.weibo |wc
+   1468    7329  149607
+nemo@localhost:~/imeWfreq/signals$ grep -r blank parser.log.test.1635.20150116.weibo |wc
+    157     787   14087
+nemo@localhost:~/imeWfreq/signals$ date
+Fri Jan 23 16:37:38 CST 2015
+
+
+百度贴吧
+
+贴吧列表页
+http://tieba.baidu.com/f?kw=%D6%D8%C9%FA%D6%AE%D1%FD%C4%F5%C8%CB%C9%FA
+<div class="forum_content clearfix">
+
+贴吧帖子页
+http://tieba.baidu.com/p/3495147492
+<div id="content">
+每一个帖子的回复下面，都有“举报”这个词，导致“举报”的词频非常高
+
+贴吧个人页
+http://tieba.baidu.com/home/main/?ie=utf-8&un=%E8%B0%88%E7%AC%91z1%E8%8B%A5
+放弃，不要这种页面
+
+http://tieba.baidu.com/mo/q/m?kw=%E6%9A%B4%E9%9B%AA%E8%8B%B1%E9%9B%84%E4%BC%A0&pn=0&
+
+
