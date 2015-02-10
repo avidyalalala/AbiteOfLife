@@ -14,9 +14,9 @@ import codecs
 from datetime import date, datetime 
 import time
 import cookielib
+import urllib2
 
 import pickle
-import requests
 import logging
 
 def save_cookies(requests_cookiejar, filename):
@@ -118,19 +118,23 @@ def sougouNewHandler(link):
 #不管网页是什么编码，都返回 utf-8 格式
 #网页的解析格式默认采用utf-8 编码
 def requestIt(link, encoding='utf-8',cookies={}):
-    headers = {'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Charset':'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
-        'Pragma':'no-cache',
-        'Cache-Control': 'no-cache',
-        'Connection':'keep-alive',
-        'Accept-Encoding:':'gzip, deflate, sdch',
-        'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36',
-        'Referer':'http://baidu.com'
-        }
-
-    r=requests.get(link, headers=headers,cookies=dict(cookies))
-    r.encoding=encoding
-    return r.text.encode("utf-8"),r.cookies
+    opener=urllib2.build_opener()
+    opener.addheaders = [
+        ('Accept','text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'),
+        ('Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7'),
+        ('Pragma','no-cache'),
+        ('Cache-Control', 'no-cache'),
+        ('Keep-Alive', '115'),
+        ('Connection', 'keep-alive'),
+#        ('Accept-Encoding:','gzip, deflate, sdch'),
+        ("Cookie", 'SUB=_2AkMjVJ3Rf8NhqwJRmPkXyG7kb4V-wg_EiebDAHzsJxJTHnge7FAoF_3pfd_Q-mRirmrrpd3_0f3i; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9W5bwX5CCSGevosLGKiFWv1z; SINAGLOBAL=5799703761410.659.1409815276676; ULV=1423219971545:3:1:1:5520051170822.918.1423219971481:1413793237690; UOR=,,news.ifeng.com; YF-Page-G0=27b9c6f0942dad1bd65a7d61efdfa013; _s_tentry=-; Apache=5520051170822.918.1423219971481'),
+        ('Referer', 'http://weibo.com'),
+        ('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.111 Safari/537.36')
+    ]
+        
+    r=opener.open(link)
+    text=r.read().decode(encoding)
+    return text.encode("utf-8"),{}
 
 def writeResult(line):
     global target_file
@@ -160,7 +164,7 @@ def main():
         "http://d.weibo.com/100803_ctg1_1_-_ctg11?from=faxian_huati&mod=mfenlei": weiboTopicHandler,
         #微博热门话题 娱乐八卦 top10
         "http://d.weibo.com/100803_ctg1_2_-_ctg12?from=faxian_huati&mod=mfenlei": weiboTopicHandler,
-#        #百度搜索实时热点排行榜 (取带“新”标签 词)
+        #百度搜索实时热点排行榜 (取带“新”标签 词)
         "http://top.baidu.com/buzz?b=1&c=513&fr=topbuzz_b1_c513": baiduHotHandler
     }
 
@@ -175,6 +179,7 @@ def main():
     target_file.close()
     mail_address=open("mail_address.txt","r").readlines()
     print('cat '+target_file.name+'|mail -s"热词'+target_file.name+'" '+"".join(mail_address))
+    #os.system('cat '+target_file.name)
     os.system('cat '+target_file.name+'|mail -s"热词'+target_file.name+'" '+"".join(mail_address))
     return
 
