@@ -173,6 +173,9 @@ def main():
             logging.debug(e)
             raise
     target_file.close()
+    mail_address=open("mail_address.txt","r").readlines()
+    print('cat '+target_file.name+'|mail -s"热词'+target_file.name+'" '+"".join(mail_address))
+    os.system('cat '+target_file.name+'|mail -s"热词'+target_file.name+'" '+"".join(mail_address))
     return
 
 target_file=None   
