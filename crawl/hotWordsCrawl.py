@@ -134,6 +134,7 @@ def requestIt(link, encoding='utf-8',cookies={}):
         
     r=opener.open(link)
     text=r.read().decode(encoding)
+    text=text.decode("gbk")
     return text.encode("utf-8"),{}
 
 def writeResult(line):
@@ -180,7 +181,8 @@ def main():
     mail_address=open("mail_address.txt","r").readlines()
     print('cat '+target_file.name+'|mail -s"热词'+target_file.name+'" '+"".join(mail_address))
     #os.system('cat '+target_file.name)
-    os.system('cat '+target_file.name+'|mail -s"热词'+target_file.name+'" '+"".join(mail_address))
+    
+    os.system('uuencode '+target_file.name+''+str(target_file.name)'|mail -s"热词'+target_file.name+'" '+"".join(mail_address))
     return
 
 target_file=None   
