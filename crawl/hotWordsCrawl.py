@@ -11,11 +11,13 @@ from BeautifulSoup import BeautifulSoup,Comment
 
 import codecs
 
-from datetime import date, timedelta, datetime 
+from datetime import date, datetime 
+import time
 import cookielib
 
 import pickle
 import requests
+import logging
 
 def save_cookies(requests_cookiejar, filename):
     with open(filename, 'wb') as f:
@@ -25,10 +27,8 @@ def load_cookies(filename):
     with open(filename, 'rb') as f:
         return pickle.load(f)
 
- 
-#微博热门话题
-def weiboTopicHandler(link):
-    writeResult(link)
+def loadCookies():
+
     cookies={"SUB":"_2AkMjVJ3Rf8NhqwJRmPkXyG7kb4V-wg_EiebDAHzsJxJTHnge7FAoF_3pfd_Q-mRirmrrpd3_0f3i",
         "SUBP":"0033WrSXqPxfM72-Ws9jqgMF55529P9D9W5bwX5CCSGevosLGKiFWv1z", 
         "SINAGLOBAL":"5799703761410.659.1409815276676",
@@ -37,21 +37,40 @@ def weiboTopicHandler(link):
         "YF-Page-G0":"27b9c6f0942dad1bd65a7d61efdfa013",
         "_s_tentry":"-",
         "Apache":"5520051170822.918.1423219971481"}
+    try:
+        f=open("weibocookie","r")
+        lastVisit="".join(f.readlines())
+        if(lastVisit.strip()!=""):
+           logging.debug(lastVisit) 
+    except IOError:
+        logging.debug("cannot find weibo cookie file")
+        pass
 
+    return cookies
+
+def saveCookies(cookies):
+    if(len(cookies.keys())>0):
+        f=open("weibocookie","w")
+        for name in cookies.keys():
+            f.write(name+":"+cookies[name]+",")
+            logging.debug(name+":"+cookies[name]+",")
+        cookies=cookies[0:-2]
+    return
+
+#微博热门话题
+def weiboTopicHandler(link):
+    writeResult(link)
+    cookies=loadCookies()
     html,cookies=requestIt(link, cookies=cookies)
     #save cookies
     ls=re.search(r'<script>.*?"domid":"Pl_Discover_Pt6Rank__5"(.*?)<\/script>',html)
     if(ls is not None):
-        print("found:")
         ws = re.findall(r'.*?class=\\"S_txt1\\".*?#(.*?)#<\\/a>', ls.group(),re.S)
     #ls=re.findall(r'^<script>.*?"domid":"Pl_Discover_Pt6Rank__5".*?class=\\"S_txt1\\".*?#(.*?)#<\\/a>',html, re.S)
     for _word in ws[0:10]:
         writeResult(_word)
     #TODO：save cookies
-    print(cookies.keys())
-    for name in cookies.keys():
-        print(name)
-        print(cookies[name])
+    saveCookies(cookies)
     return
 
 #百度热词
@@ -122,12 +141,12 @@ def initEncoding(encoding):
     if(sys.getdefaultencoding()!=encoding):
         reload(sys)
         sys.setdefaultencoding(encoding)
-        print("the system encoding is "+sys.getdefaultencoding())
+        logging.debug("the system encoding is "+sys.getdefaultencoding())
     return
 
 def main():
     global target_file
-    target_file=open("hotWords.txt","w")
+    target_file=open("hotWords"+str(time.strftime("%Y-%m-%d-%H", time.localtime()))+".txt","w")
 
     initEncoding("utf-8")
     source_map={
@@ -151,7 +170,7 @@ def main():
             handler=source_map[link]
             handler(link)
         except Exception, e:
-            print(e)
+            logging.debug(e)
             raise
     target_file.close()
     return
@@ -159,6 +178,7 @@ def main():
 target_file=None   
 
 if __name__=="__main__":
-    print("hotWordsCrawl starts at: "+str(datetime.now()))
+    logging.basicConfig(level = logging.DEBUG)#定义日志级别为INFO级别
+    logging.debug("hotWordsCrawl starts at: "+str(datetime.now()))
     main()
-    print("hotWordsCrawl ends at: "+str(datetime.now()))
+    logging.debug("hotWordsCrawl ends at: "+str(datetime.now()))
