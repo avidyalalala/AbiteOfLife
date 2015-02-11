@@ -19,14 +19,6 @@ import urllib2
 import pickle
 import logging
 
-def save_cookies(requests_cookiejar, filename):
-    with open(filename, 'wb') as f:
-        pickle.dump(requests_cookiejar, f)
-
-def load_cookies(filename):
-    with open(filename, 'rb') as f:
-        return pickle.load(f)
-
 def loadCookies():
 
     cookies={"SUB":"_2AkMjVJ3Rf8NhqwJRmPkXyG7kb4V-wg_EiebDAHzsJxJTHnge7FAoF_3pfd_Q-mRirmrrpd3_0f3i",
@@ -134,7 +126,6 @@ def requestIt(link, encoding='utf-8',cookies={}):
         
     r=opener.open(link)
     text=r.read().decode(encoding)
-    text=text.decode("gbk")
     return text.encode("utf-8"),{}
 
 def writeResult(line):
@@ -151,7 +142,8 @@ def initEncoding(encoding):
 
 def main():
     global target_file
-    target_file=open("hotWords"+str(time.strftime("%Y-%m-%d-%H", time.localtime()))+".txt","w")
+    timeStamp=str(time.strftime("%Y-%m-%d-%H", time.localtime()))
+    target_file=open("hotWords"+timeStamp+".txt","w")
 
     initEncoding("utf-8")
     source_map={
@@ -179,10 +171,9 @@ def main():
             raise
     target_file.close()
     mail_address=open("mail_address.txt","r").readlines()
-    print('cat '+target_file.name+'|mail -s"热词'+target_file.name+'" '+"".join(mail_address))
     #os.system('cat '+target_file.name)
-    
-    os.system('uuencode '+target_file.name+''+str(target_file.name)'|mail -s"热词'+target_file.name+'" '+"".join(mail_address))
+    #print('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))
+    os.system('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))
     return
 
 target_file=None   
