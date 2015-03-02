@@ -75,7 +75,7 @@ def baiduHotHandler(link):
     spans=outer.findAll("span",{"class":"icon icon-new"},limit=10)
     for span in spans[:10]:
         word=span.parent.find("a",{"class":"list-title"})
-        writeResult(word.string)
+        filterResult(word.string)
     return
 
 #百度电影
@@ -88,7 +88,7 @@ def baiduMovieHandler(link):
     spans=outer.findAll("span",{"class":"icon-rise"},limit=5)
     for span in spans[:5]:
         word=span.parent.parent.find("a",{"class":"list-title"})
-        writeResult(word.string)
+        filterResult(word.string)
     return
 
 #搜狗新词解析
@@ -103,7 +103,7 @@ def sougouNewHandler(link):
     tag_divs=tag_divs+outer.findAll("div",{"class":"newdict_list item"})
     for _div in tag_divs:
         #print(("".join(_div.findAll(text=True)).replace(re.compile(r"\s"),"")))
-        writeResult(("".join(_div.findAll(text=True)).replace("\n","")))
+        filterResult("".join(_div.findAll(text=True)).replace("\n",""))
     return
 
 
@@ -128,6 +128,9 @@ def requestIt(link, encoding='utf-8',cookies={}):
     text=r.read().decode(encoding)
     return text.encode("utf-8"),{}
 
+def filterResult(word):
+    return writeResult(line)
+        
 def writeResult(line):
     global target_file
     target_file.writelines(line+"\r\n")
