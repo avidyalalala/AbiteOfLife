@@ -146,7 +146,8 @@ def initEncoding(encoding):
 def main():
     global target_file
     timeStamp=str(time.strftime("%Y-%m-%d-%H", time.localtime()))
-    target_file=open("hotWords"+timeStamp+".txt","w")
+    cur_path=os.system("pwd")
+    target_file=open(cur_path+"/hotWords"+timeStamp+".txt","w")
 
     initEncoding("utf-8")
     source_map={
