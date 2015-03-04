@@ -2,32 +2,45 @@
 #coding=utf-8
 
 #author:lalala
+
+import os
 import sqlite3
-c={}
+import common
 
-def initConn():
-    global c
-    conn=sqlite3.connect("input_platform.db")
-    c=conn.cursor()
+class SQLiteWrapper:
+    
+    def __init__(self):
+        common.initEncoding("utf-8")
+        self.logger=common.getLogger("db")
+        DB_NAME=common.getRootPath()+"/input_platform.db"
+        self.conn=self.initConn(DB_NAME)
+        self.c=self.conn.cursor()
 
-def createTable():
-    global c
-    c.execute("create table lala (date text, word text, pinyin text)")
+    def initConn(self,db_name):
+        conn=sqlite3.connect(db_name)
+        return conn
 
-def insertWord():
-    global c
-    c.execute("insert into lala values('2015-03-03','中文','zhongwen')")
-    return
+    def createTable(self, createTableSQL):
+        #"create table lala (date text, word text, pinyin text)"
+        self.c.execute(createTableSQL)
 
-def selectAll():
-    global c
-    c.execute("select * from lala")
-    print(c.fetchall())
-    return c.fetchall()
+    def insertWord(self, dateStamp, word, pinyin):
+        #"insert into lala values('2015-03-03','中文','zhongwen')"
+        if((dateStamp and word and pinyin) is None):
+            self.logger.debug("insert kong")
+            
+        self.logger.debug(self.c.execute("insert into hot_word_auto values('%s','%s','%s')"% (dateStamp,word,pinyin)))
+        self.conn.commit()
+        return
+
+    def selectAll(self):
+        self.c.execute("select * from hot_word_auto")
+        self.logger.debug(self.c.fetchall())
+        return self.c.fetchall()
 
 if __name__=="__main__":
-    initConn()
-    createTable()
-    insertWord()
-    selectAll()
+    dbInstance=SQLiteWrapper()
+    #dbInstance.createTable("create table hot_word_auto (date text, word text, pinyin text)")
+    dbInstance.insertWord("2015-03-03","啦啦啦","lalala")
+    dbInstance.selectAll()
     
