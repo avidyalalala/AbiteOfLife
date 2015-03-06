@@ -6,6 +6,7 @@
 import os
 import sqlite3
 import common
+import datetime
 
 class SQLiteWrapper:
     
@@ -24,12 +25,20 @@ class SQLiteWrapper:
         #"create table lala (date text, word text, pinyin text)"
         self.c.execute(createTableSQL)
 
-    def insertWord(self, dateStamp, word, pinyin):
+    def dropTable(self, tableName):
+        self.c.execute("'drop table "+tableName+"'")
+
+    def insertWord(self, word, pinyin,freq):
         #"insert into lala values('2015-03-03','中文','zhongwen')"
-        if((dateStamp and word and pinyin) is None):
+        if((word and pinyin) is None):
             self.logger.debug("insert kong")
-            
-        self.logger.debug(self.c.execute("insert into hot_word_auto values('%s','%s','%s')"% (dateStamp,word,pinyin)))
+            #TODO: throw Exception
+            return
+        if(freq is None):
+            freq=1
+        #date("now") and the datetime("now") the built-in method of SQLite
+        #to keep date("now") is becuase it is the unite-primary key with word, which means, at the same day, it is forbidden to insert same word
+        self.logger.debug(self.c.execute("""insert into hot_word_auto values(date("now"),'%s','%s','%s',datetime("now"))"""% (word,pinyin,freq)))
         self.conn.commit()
         return
 
@@ -38,9 +47,20 @@ class SQLiteWrapper:
         self.logger.debug(self.c.fetchall())
         return self.c.fetchall()
 
+    def selectWordsDeltaDaysAfter(self, delta): 
+        date="'"+str(datetime.date.today()-datetime.timedelta(delta))+" 00:00:00'"  
+        sql="select * from hot_word_auto where gmt_modified > %s"%(date)
+        self.logger.debug(sql)
+        self.c.execute(sql)
+        self.logger.debug(self.c.fetchall())
+        return self.c.fetchall()
+
+
 if __name__=="__main__":
     dbInstance=SQLiteWrapper()
-    #dbInstance.createTable("create table hot_word_auto (date text, word text, pinyin text)")
-    dbInstance.insertWord("2015-03-03","啦啦啦","lalala")
-    dbInstance.selectAll()
-    
+    try:
+        dbInstance.insertWord(word="啦啦啦",pinyin="la la la",freq=1)
+    except sqlite3.IntegrityError:
+        pass
+    #dbInstance.selectAll()
+    dbInstance.selectWordsDeltaDaysAfter(7)
