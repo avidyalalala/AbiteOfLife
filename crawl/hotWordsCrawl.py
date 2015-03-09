@@ -12,14 +12,22 @@ from BeautifulSoup import BeautifulSoup,Comment
 import codecs
 
 from datetime import date, datetime 
+
 import time
 import cookielib
 import urllib2
 
 import pickle
 import logging
+import common
+
+import pinyinGenerator
+import polyphoneFilter
+
+logger=common.getLogger("crawler")
 
 def loadCookies():
+    global logger
 
     cookies={"SUB":"_2AkMjVJ3Rf8NhqwJRmPkXyG7kb4V-wg_EiebDAHzsJxJTHnge7FAoF_3pfd_Q-mRirmrrpd3_0f3i",
         "SUBP":"0033WrSXqPxfM72-Ws9jqgMF55529P9D9W5bwX5CCSGevosLGKiFWv1z", 
@@ -33,25 +41,26 @@ def loadCookies():
         f=open("weibocookie","r")
         lastVisit="".join(f.readlines())
         if(lastVisit.strip()!=""):
-           logging.debug(lastVisit) 
+           logger.debug(lastVisit) 
     except IOError:
-        logging.debug("cannot find weibo cookie file")
+        logger.debug("cannot find weibo cookie file")
         pass
 
     return cookies
 
 def saveCookies(cookies):
+    global logger
     if(len(cookies.keys())>0):
         f=open("weibocookie","w")
         for name in cookies.keys():
             f.write(name+":"+cookies[name]+",")
-            logging.debug(name+":"+cookies[name]+",")
+            logger.debug(name+":"+cookies[name]+",")
         cookies=cookies[0:-2]
     return
 
 #微博热门话题
 def weiboTopicHandler(link):
-    writeResult(link)
+    #writeResult(link)
     cookies=loadCookies()
     html,cookies=requestIt(link, cookies=cookies)
     #save cookies
@@ -59,15 +68,14 @@ def weiboTopicHandler(link):
     if(ls is not None):
         ws = re.findall(r'.*?class=\\"S_txt1\\".*?#(.*?)#<\\/a>', ls.group(),re.S)
     #ls=re.findall(r'^<script>.*?"domid":"Pl_Discover_Pt6Rank__5".*?class=\\"S_txt1\\".*?#(.*?)#<\\/a>',html, re.S)
-    for _word in ws[0:10]:
-        writeResult(_word)
     #TODO：save cookies
     saveCookies(cookies)
-    return
+    return ws[:10]
 
 #百度热词
 def baiduHotHandler(link):
-    writeResult(link)
+    #writeResult(link)
+    hots=[]
     html,cookies=requestIt(link, "gbk")
     soup=BeautifulSoup(html)
     outer=soup.find("table",{"class":"list-table"})
@@ -75,12 +83,13 @@ def baiduHotHandler(link):
     spans=outer.findAll("span",{"class":"icon icon-new"},limit=10)
     for span in spans[:10]:
         word=span.parent.find("a",{"class":"list-title"})
-        filterResult(word.string)
-    return
+        hots.append(word.string)
+    return hots
 
 #百度电影
 def baiduMovieHandler(link):
-    writeResult(link)
+    #writeResult(link)
+    hots=[]
     html,cookies=requestIt(link, "gbk")
     soup=BeautifulSoup(html)
     outer=soup.find("table",{"class":"list-table"})
@@ -88,12 +97,14 @@ def baiduMovieHandler(link):
     spans=outer.findAll("span",{"class":"icon-rise"},limit=5)
     for span in spans[:5]:
         word=span.parent.parent.find("a",{"class":"list-title"})
-        filterResult(word.string)
-    return
+        hots.append(word.string)
+    return hots
 
-#搜狗新词解析
+'''搜狗新词解析
+    没使用搜狗来源
+'''
 def sougouNewHandler(link):
-    writeResult(link)
+    #writeResult(link)
     html,cookies=requestIt(link)
     soup=BeautifulSoup(html)
     outer=soup.find("div",{"id":"newdict_show"})
@@ -129,50 +140,80 @@ def requestIt(link, encoding='utf-8',cookies={}):
     return text.encode("utf-8"),{}
 
 def filterResult(word):
-    return writeResult(line)
+    return writeLineResult(line)
         
-def writeResult(line):
-    global target_file
+def writeLineResult(line, target_file):
     target_file.writelines(line+"\r\n")
     return
-    
-def initEncoding(encoding):
-    if(sys.getdefaultencoding()!=encoding):
-        reload(sys)
-        sys.setdefaultencoding(encoding)
-        logging.debug("the system encoding is "+sys.getdefaultencoding())
+
+def writeDictResult(_dict, target_file):
+    for (word,pinyin) in _dict.items():
+        writeLineResult(word+"\t"+pinyin,target_file)
     return
 
+def writeListResult(_list, target_file):
+    for single in _list:
+        writeLineResult(single, target_file)
+    return
+    
 def main():
-    global target_file
-    timeStamp=str(time.strftime("%Y-%m-%d-%H", time.localtime()))
-    cur_path=os.system("pwd")
-    target_file=open(cur_path+"/hotWords"+timeStamp+".txt","w")
+    global target_file,logger
 
-    initEncoding("utf-8")
+    timeStamp=str(time.strftime("%Y-%m-%d-%H", time.localtime()))
+    rootPath=common.getRootPath()
+    target_file=open(rootPath+"/hotWords"+timeStamp+".txt","w")
+
+    common.initEncoding("utf-8")
     source_map={
         #搜狗词库每日新词 (5个)
-        "http://pinyin.sogou.com/dict/": sougouNewHandler,
+        #"http://pinyin.sogou.com/dict/": sougouNewHandler,
         #百度电影类别 即将上映 搜索上升阶段 top5
         "http://top.baidu.com/buzz?b=659&c=1&fr=topcategory_c1": baiduMovieHandler,
         #百度电影类别 正在热映 搜索上升阶段 top5
         "http://top.baidu.com/buzz?b=661&c=1&fr=topbuzz_b659_c1": baiduMovieHandler,
         #微博热门话题 社会类别 top10
-        "http://d.weibo.com/100803_ctg1_1_-_ctg11?from=faxian_huati&mod=mfenlei": weiboTopicHandler,
+        #"http://d.weibo.com/100803_ctg1_1_-_ctg11?from=faxian_huati&mod=mfenlei": weiboTopicHandler,
         #微博热门话题 娱乐八卦 top10
-        "http://d.weibo.com/100803_ctg1_2_-_ctg12?from=faxian_huati&mod=mfenlei": weiboTopicHandler,
+        #"http://d.weibo.com/100803_ctg1_2_-_ctg12?from=faxian_huati&mod=mfenlei": weiboTopicHandler,
         #百度搜索实时热点排行榜 (取带“新”标签 词)
         "http://top.baidu.com/buzz?b=1&c=513&fr=topbuzz_b1_c513": baiduHotHandler
     }
 
-
+    words_list=[]
     for link in source_map:
         try:
             handler=source_map[link]
-            handler(link)
+            words_list+=handler(link)
         except Exception, e:
-            logging.debug(e)
+            logger.debug(e)
             raise
+    logger.debug(words_list)
+
+    '''the words will be commited into the hotword admin'''
+    words_dict={}
+    '''the words will be sent to mail'''
+    send_mail_dict={}
+    send_mail_list=[]
+
+    '''filter the words longer than 8'''
+    send_mail_list=polyphoneFilter.filterLongerThan8(words_list)
+    '''filter the words list which contains duo yinzi out of the words_list'''
+    send_mail_list+=polyphoneFilter.filterDuoyinzi(words_list)
+    logger.debug(send_mail_list)
+
+    '''zhuyin'''
+    words_dict=pinyinGenerator.zhuyin(words_list)
+
+    '''merge the dict which cannot be zhu yin'''
+    for(word,pinyin) in words_dict.items():
+        if(pinyin==""):
+            send_mail_dict[word]=""
+            del words_dict[word]
+               
+    for word in send_mail_list:
+        send_mail_dict[word]=""
+
+    writeDictResult(words_dict, target_file)
     target_file.close()
     mail_address=open("mail_address.txt","r").readlines()
     #os.system('cat '+target_file.name)
@@ -183,7 +224,6 @@ def main():
 target_file=None   
 
 if __name__=="__main__":
-    logging.basicConfig(level = logging.DEBUG)#定义日志级别为INFO级别
-    logging.debug("hotWordsCrawl starts at: "+str(datetime.now()))
+    logger.debug("hotWordsCrawl starts at: "+str(datetime.now()))
     main()
-    logging.debug("hotWordsCrawl ends at: "+str(datetime.now()))
+    logger.debug("hotWordsCrawl ends at: "+str(datetime.now()))

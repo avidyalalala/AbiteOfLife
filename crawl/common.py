@@ -9,6 +9,9 @@ import sys
 import logging
 import logging.handlers
 
+def getRootPath():
+    return "/home/lina.hou/hotWord"
+
 def getLogger(logName):
     LOG_FILE = getRootPath()+'/hotWords.log'
     handler = logging.handlers.RotatingFileHandler(LOG_FILE, maxBytes = 1024*1024) # 实例化handler 
@@ -23,14 +26,14 @@ def getLogger(logName):
 
     return logger
 
-def getRootPath():
-    return "/home/lina.hou/hotWord"
+logger=getLogger("common")
 
 def initEncoding(encoding):
+    global logger
     if(sys.getdefaultencoding()!=encoding):
         reload(sys)
         sys.setdefaultencoding(encoding)
-        logging.debug("the system encoding is "+sys.getdefaultencoding())
+        logger.debug("the system encoding is "+sys.getdefaultencoding())
     return
 
 

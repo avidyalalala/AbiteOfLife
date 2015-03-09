@@ -19,41 +19,6 @@ import common
 logger=common.getLogger("pinyin")
 
 '''
-duo yin zi Filter
-多音字过滤器
-'''
-class PolyphoneFilter:
-    def __init__(self):
-        global logger
-        self.logger=logger
-        common.initEncoding("utf-8")
-        self.hanzi_list=self.initHanziTable()
-        self.logger.debug(self.hanzi_list[1])
-
-    def containDuoyinzi(self, word):
-        for i in range(0,len(word)):
-            if(self.isDuoyinzi(word[i])):
-                return True         
-        return False
-
-    def isDuoyinzi(self, hanzi):
-        try:
-            _index=self.hanzi_list.index(codecs.encode(hanzi,"utf-8"))
-            if(_index>=0):
-                return True
-        except Exception, err:
-            self.logger.debug(Exception)
-            self.logger.debug(err)
-        return False
-                
-
-    def initHanziTable(self):
-        rootPath=common.getRootPath()
-
-        #_file=open(rootPath+"/duoyinzi.txt","r")   
-        _file=codecs.open(rootPath+"/duoyinzi.txt","r","utf-8")
-        return map(lambda x:x.strip(), _file.readlines())
-'''
 pinyin 
 '''
 class PinyinGenerator:
@@ -74,24 +39,37 @@ class PinyinGenerator:
             pinyinDict[arr[0]]=arr[1]
 
         return pinyinDict
-
+    
+    '''if any of hanzi cannot be zhu yin, the whole word's pinyin will be empty string'''
     def getPinyinStr(self, word):
-        pinyinStr=()
-        pinyinStr=self.pinyinDict[codecs.encode(word[0],"utf-8")]
-        for i in range(1,len(word)):
-            self.logger.debug(word[i].encode("utf-8"))
-            self.logger.debug(self.pinyinDict[word[i].encode("utf-8")])
-            pinyinStr+="'"+self.pinyinDict[codecs.encode(word[i],"utf-8")]
+        pinyinStr=""
+        for i in range(0,len(word)):
+#            self.logger.debug(word[i].encode("utf-8"))
+#            self.logger.debug(self.pinyinDict[word[i].encode("utf-8")])
+            pinyin=self.pinyinDict[codecs.encode(word[i],"utf-8")]
+            '''if any of hanzi cannot be zhu yin, the whole word's pinyin will be empty string'''
+            if(pinyin is None or pinyin ==''):
+                return ""   
+            pinyinStr+="'"+pinyin
+        pinyinStr=pinyinStr[1:len(pinyinStr)]   
         self.logger.debug(pinyinStr)
         return pinyinStr
-        
+
+    def zhuyin(self, _list):
+        wors_pinyin_dict={}
+        for word in _list:
+            pinyin=self.getPinyinStr(word)
+            wors_pinyin_dict[word]=pinyin
+        self.logger.debug(wors_pinyin_dict)
+        return wors_pinyin_dict
+                
+
+def zhuyin(_list):
+    pinyinGenerator=PinyinGenerator()
+    return pinyinGenerator.zhuyin(_list)
 
 if __name__=="__main__":
     pinyinGenerator=PinyinGenerator()
     
-    print(pinyinGenerator.getPinyinStr(codecs.decode("安吉星娜")))
-    print(pinyinGenerator.getPinyinStr(codecs.decode("安吉星")))
+    print(pinyinGenerator.zhuyin([codecs.decode("安吉星娜"),codecs.decode("安吉星")]))
 
-    poly=PolyphoneFilter()
-    print(poly.containDuoyinzi(codecs.decode("安吉星娜","utf-8")))
-    print(poly.containDuoyinzi(codecs.decode("安吉星","utf-8")))
