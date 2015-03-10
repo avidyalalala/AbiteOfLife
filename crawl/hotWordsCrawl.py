@@ -23,6 +23,8 @@ import common
 
 import pinyinGenerator
 import polyphoneFilter
+import adminConnector
+import duplicatesFilter
 
 logger=common.getLogger("crawler")
 
@@ -195,10 +197,11 @@ def main():
     send_mail_dict={}
     send_mail_list=[]
 
-    '''filter the words longer than 8'''
-    send_mail_list=polyphoneFilter.filterLongerThan8(words_list)
+    '''filter the words longer than 7'''
+    send_mail_list=polyphoneFilter.filterLongerThan7(words_list)
     '''filter the words list which contains duo yinzi out of the words_list'''
     send_mail_list+=polyphoneFilter.filterDuoyinzi(words_list)
+    logger.debug("send mail list:")
     logger.debug(send_mail_list)
 
     '''zhuyin'''
@@ -213,13 +216,28 @@ def main():
     for word in send_mail_list:
         send_mail_dict[word]=""
 
-    writeDictResult(words_dict, target_file)
-    target_file.close()
-    mail_address=open("mail_address.txt","r").readlines()
-    #os.system('cat '+target_file.name)
-    #print('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))
-    os.system('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))
-    return
+    '''is Auto commit switch open'''
+    if(adminConnector.isAutoOpen()==0):
+        '''manual model'''
+        send_mail_dict.update(words_dict)
+        writeDictResult(send_mail_dict, target_file)
+        target_file.close()
+        '''send mail'''
+        common.sendMail(target_file, timeStamp)
+    else:
+        '''auto model'''   
+        oldWords=duplicatesFilter.findDuplicateWords(words_dict)  
+        logger.debug("after duplicatesFilter, the words_dict remain:")
+        logger.debug(words_dict)
+        logger.debug("save words into db:")
+        _re=adminConnector.commitHots(words_dict)
+        if(_re is True):
+            duplicatesFilter.saveHotWords(words_dict)
+        else:
+            logger.debug("cannot commit hotWords")
+
+        return
+
 
 target_file=None   
 

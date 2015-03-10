@@ -36,6 +36,13 @@ def initEncoding(encoding):
         logger.debug("the system encoding is "+sys.getdefaultencoding())
     return
 
-
+'''send mail'''
+def sendMail(target_file,timeStamp):
+    logger.debug("start to send mail")
+    mail_address=open("mail_address.txt","r").readlines()
+    #os.system('cat '+target_file.name)
+    logger.debug('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))
+    os.system('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))
+ 
 
 

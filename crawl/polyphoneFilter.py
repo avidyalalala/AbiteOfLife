@@ -70,13 +70,13 @@ def filterDuoyinzi(_list):
     poly=PolyphoneFilter()
     return poly.filterDuoyinzi(_list)
 
-def filterLongerThan8(_list):
+def filterLongerThan7(_list):
     beRemoved=[]
     for word in _list:
         if(len(word)>7):
             _list.remove(word)
             beRemoved.append(word)
-    logger.debug("longger than 8:")
+    logger.debug("longger than 7:")
     logger.debug(beRemoved)
     return beRemoved
 
