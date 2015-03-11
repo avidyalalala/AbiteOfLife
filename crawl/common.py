@@ -44,5 +44,9 @@ def sendMail(target_file,timeStamp):
     logger.debug('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))
     os.system('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))
  
+def listSubtract(fullList, subtractorList):
+    for word in subtractorList:
+        fullList.remove(word)
+
 
 

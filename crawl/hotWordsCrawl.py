@@ -158,6 +158,13 @@ def writeListResult(_list, target_file):
         writeLineResult(single, target_file)
     return
     
+def writeFileAndSend(send_mail_dict,target_file,timeStamp):
+    writeDictResult(send_mail_dict, target_file)
+    target_file.close()
+    '''send mail'''
+    common.sendMail(target_file, timeStamp)
+
+
 def main():
     global target_file,logger
 
@@ -195,47 +202,43 @@ def main():
     words_dict={}
     '''the words will be sent to mail'''
     send_mail_dict={}
-    send_mail_list=[]
 
     '''filter the words longer than 7'''
-    send_mail_list=polyphoneFilter.filterLongerThan7(words_list)
+    send_mail_dict=polyphoneFilter.filterLongerThan7(words_list)
     '''filter the words list which contains duo yinzi out of the words_list'''
-    send_mail_list+=polyphoneFilter.filterDuoyinzi(words_list)
-    logger.debug("send mail list:")
-    logger.debug(send_mail_list)
+    send_mail_dict.update(polyphoneFilter.filterDuoyinzi(words_list))
+    logger.debug("send mail dict:")
+    logger.debug(send_mail_dict)
 
     '''zhuyin'''
     words_dict=pinyinGenerator.zhuyin(words_list)
 
     '''merge the dict which cannot be zhu yin'''
-    for(word,pinyin) in words_dict.items():
+    copy=words_dict.copy()
+    for(word,pinyin) in copy.items():
         if(pinyin==""):
-            send_mail_dict[word]=""
+            send_mail_dict[word]="cannot be zhuyin"
             del words_dict[word]
+    #common.dictSubtract(_dict,send_mail_dict)
                
-    for word in send_mail_list:
-        send_mail_dict[word]=""
-
     '''is Auto commit switch open'''
     if(adminConnector.isAutoOpen()==0):
         '''manual model'''
         send_mail_dict.update(words_dict)
-        writeDictResult(send_mail_dict, target_file)
-        target_file.close()
-        '''send mail'''
-        common.sendMail(target_file, timeStamp)
+        writeFileAndSend(send_mail_dict, target_file, timeStamp)
     else:
         '''auto model'''   
-        oldWords=duplicatesFilter.findDuplicateWords(words_dict)  
+        send_mail_dict.update(duplicatesFilter.findDuplicateWords(words_dict))  
         logger.debug("after duplicatesFilter, the words_dict remain:")
         logger.debug(words_dict)
         logger.debug("save words into db:")
-        _re=adminConnector.commitHots(words_dict)
-        if(_re is True):
-            duplicatesFilter.saveHotWords(words_dict)
-        else:
-            logger.debug("cannot commit hotWords")
+#        _re=adminConnector.commitHots(words_dict)
+#        if(_re is True):
+#            duplicatesFilter.saveHotWords(words_dict)
+#        else:
+#            logger.debug("cannot commit hotWords")
 
+        writeFileAndSend(send_mail_dict, target_file, timeStamp)
         return
 
 

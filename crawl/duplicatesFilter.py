@@ -89,11 +89,11 @@ def findRecentWords():
 
 def findDuplicateWords(fullDict):
     oldWords=findRecentWords()   
-    duplicates=[]
+    duplicates={}
     for old in oldWords:
         if(fullDict.has_key(old)):
             del fullDict[old]
-            duplicates.append(old)
+            duplicates[old]="duplicate with week"
     logger.debug("find the duplicate word in 7 days:")
     logger.debug(duplicates)
     return duplicates

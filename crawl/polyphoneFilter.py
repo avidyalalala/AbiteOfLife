@@ -35,12 +35,12 @@ class PolyphoneFilter:
     meanwhile, returned the be Removed words list
     '''
     def filterDuoyinzi(self, _list):
-        beRemoved=[]
+        beRemoved={}
         for word in _list:
             re= self.containDuoyinzi(word)
             if(re):
-                beRemoved.append(word)
-                _list.remove(word)
+                beRemoved[word]="duo yin zi"
+        common.listSubtract(_list, beRemoved.keys())
         return beRemoved
 
     def containDuoyinzi(self, word):
@@ -71,13 +71,13 @@ def filterDuoyinzi(_list):
     return poly.filterDuoyinzi(_list)
 
 def filterLongerThan7(_list):
-    beRemoved=[]
+    beRemoved={}
     for word in _list:
         if(len(word)>7):
-            _list.remove(word)
-            beRemoved.append(word)
+            beRemoved[word]="longger than 7"
     logger.debug("longger than 7:")
     logger.debug(beRemoved)
+    common.listSubtract(_list, beRemoved.keys())
     return beRemoved
 
 if __name__=="__main__":
