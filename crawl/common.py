@@ -10,7 +10,7 @@ import logging
 import logging.handlers
 
 def getRootPath():
-    return "/home/lina.hou/hotWord"
+    return "/home/admin/hotWord"
 
 def getLogger(logName):
     LOG_FILE = getRootPath()+'/hotWords.log'
@@ -39,7 +39,7 @@ def initEncoding(encoding):
 '''send mail'''
 def sendMail(target_file,timeStamp):
     logger.debug("start to send mail")
-    mail_address=open("mail_address.txt","r").readlines()
+    mail_address=open(getRootPath()+"/mail_address.txt","r").readlines()
     #os.system('cat '+target_file.name)
     logger.debug('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))
     os.system('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))

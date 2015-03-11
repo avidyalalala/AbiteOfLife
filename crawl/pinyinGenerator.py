@@ -31,7 +31,8 @@ class PinyinGenerator:
         self.logger.debug(len(self.pinyinDict))
         
     def initPinyinDict(self):
-        pinyinFile=open("./GB18030heteronym.txt","r")   
+        rootPath=common.getRootPath()
+        pinyinFile=open(rootPath+"/GB18030heteronym.txt","r")   
         pinyinDict=defaultdict(str)
 
         for line in pinyinFile.readlines():

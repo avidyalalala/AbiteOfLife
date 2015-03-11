@@ -76,7 +76,6 @@ def weiboTopicHandler(link):
 
 #百度热词
 def baiduHotHandler(link):
-    #writeResult(link)
     hots=[]
     html,cookies=requestIt(link, "gbk")
     soup=BeautifulSoup(html)
@@ -90,7 +89,6 @@ def baiduHotHandler(link):
 
 #百度电影
 def baiduMovieHandler(link):
-    #writeResult(link)
     hots=[]
     html,cookies=requestIt(link, "gbk")
     soup=BeautifulSoup(html)
@@ -142,62 +140,32 @@ def requestIt(link, encoding='utf-8',cookies={}):
     return text.encode("utf-8"),{}
 
 def filterResult(word):
-    return writeLineResult(line)
+    global original_file
+    return writeLineResult(line,original_file)
         
-def writeLineResult(line, target_file):
-    target_file.writelines(line+"\r\n")
+def writeLineResult(line, _file):
+    _file.writelines(line+"\r\n")
     return
 
-def writeDictResult(_dict, target_file):
+def writeDictResult(_dict, _file):
     for (word,pinyin) in _dict.items():
-        writeLineResult(word+"\t"+pinyin,target_file)
+        writeLineResult(word+"\t"+pinyin,_file)
     return
 
-def writeListResult(_list, target_file):
+def writeListResult(_list, _file):
     for single in _list:
-        writeLineResult(single, target_file)
+        writeLineResult(single, _file)
     return
     
-def writeFileAndSend(send_mail_dict,target_file,timeStamp):
-    writeDictResult(send_mail_dict, target_file)
-    target_file.close()
+def writeFileAndSend(send_mail_dict,_file,timeStamp):
+    writeDictResult(send_mail_dict, _file)
+    _file.close()
     '''send mail'''
-    common.sendMail(target_file, timeStamp)
+    common.sendMail(_file, timeStamp)
 
-
-def main():
-    global target_file,logger
-
-    timeStamp=str(time.strftime("%Y-%m-%d-%H", time.localtime()))
+def hotWordDispatcher(words_list, timeStamp):
     rootPath=common.getRootPath()
-    target_file=open(rootPath+"/hotWords"+timeStamp+".txt","w")
-
-    common.initEncoding("utf-8")
-    source_map={
-        #搜狗词库每日新词 (5个)
-        #"http://pinyin.sogou.com/dict/": sougouNewHandler,
-        #百度电影类别 即将上映 搜索上升阶段 top5
-        "http://top.baidu.com/buzz?b=659&c=1&fr=topcategory_c1": baiduMovieHandler,
-        #百度电影类别 正在热映 搜索上升阶段 top5
-        "http://top.baidu.com/buzz?b=661&c=1&fr=topbuzz_b659_c1": baiduMovieHandler,
-        #微博热门话题 社会类别 top10
-        #"http://d.weibo.com/100803_ctg1_1_-_ctg11?from=faxian_huati&mod=mfenlei": weiboTopicHandler,
-        #微博热门话题 娱乐八卦 top10
-        #"http://d.weibo.com/100803_ctg1_2_-_ctg12?from=faxian_huati&mod=mfenlei": weiboTopicHandler,
-        #百度搜索实时热点排行榜 (取带“新”标签 词)
-        "http://top.baidu.com/buzz?b=1&c=513&fr=topbuzz_b1_c513": baiduHotHandler
-    }
-
-    words_list=[]
-    for link in source_map:
-        try:
-            handler=source_map[link]
-            words_list+=handler(link)
-        except Exception, e:
-            logger.debug(e)
-            raise
-    logger.debug(words_list)
-
+    target_file=open(rootPath+"/hotWords."+timeStamp+".txt","w")
     '''the words will be commited into the hotword admin'''
     words_dict={}
     '''the words will be sent to mail'''
@@ -219,12 +187,12 @@ def main():
         if(pinyin==""):
             send_mail_dict[word]="cannot be zhuyin"
             del words_dict[word]
-    #common.dictSubtract(_dict,send_mail_dict)
                
     '''is Auto commit switch open'''
     if(adminConnector.isAutoOpen()==0):
         '''manual model'''
         send_mail_dict.update(words_dict)
+
         writeFileAndSend(send_mail_dict, target_file, timeStamp)
     else:
         '''auto model'''   
@@ -232,17 +200,56 @@ def main():
         logger.debug("after duplicatesFilter, the words_dict remain:")
         logger.debug(words_dict)
         logger.debug("save words into db:")
-#        _re=adminConnector.commitHots(words_dict)
-#        if(_re is True):
-#            duplicatesFilter.saveHotWords(words_dict)
-#        else:
-#            logger.debug("cannot commit hotWords")
+        _re=adminConnector.commitHots(words_dict)
+        if(_re is True):
+            duplicatesFilter.saveHotWords(words_dict)
+        else:
+            logger.debug("cannot commit hotWords")
 
         writeFileAndSend(send_mail_dict, target_file, timeStamp)
-        return
 
 
-target_file=None   
+def main():
+    global original_file,logger
+
+    timeStamp=str(time.strftime("%Y-%m-%d-%H", time.localtime()))
+    rootPath=common.getRootPath()
+
+    common.initEncoding("utf-8")
+    source_map={
+        #搜狗词库每日新词 (5个)
+        #"http://pinyin.sogou.com/dict/": sougouNewHandler,
+        #百度电影类别 即将上映 搜索上升阶段 top5
+        "http://top.baidu.com/buzz?b=659&c=1&fr=topcategory_c1": baiduMovieHandler,
+        #百度电影类别 正在热映 搜索上升阶段 top5
+        "http://top.baidu.com/buzz?b=661&c=1&fr=topbuzz_b659_c1": baiduMovieHandler,
+        #微博热门话题 社会类别 top10
+        #"http://d.weibo.com/100803_ctg1_1_-_ctg11?from=faxian_huati&mod=mfenlei": weiboTopicHandler,
+        #微博热门话题 娱乐八卦 top10
+        #"http://d.weibo.com/100803_ctg1_2_-_ctg12?from=faxian_huati&mod=mfenlei": weiboTopicHandler,
+        #百度搜索实时热点排行榜 (取带“新”标签 词)
+        "http://top.baidu.com/buzz?b=1&c=513&fr=topbuzz_b1_c513": baiduHotHandler
+    }
+    
+    words_list=[]
+    for link in source_map:
+        try:
+            handler=source_map[link]
+            words_list+=handler(link)
+        except Exception, e:
+            logger.debug(e)
+            raise
+    '''remove the same re ci'''
+    words_list=set(words_list)
+    logger.debug(words_list)
+    original_file=open(rootPath+"/hotWords.original."+timeStamp+".txt","w")
+    writeListResult(words_list, original_file)
+
+    hotWordDispatcher(words_list, timeStamp)
+    return
+
+
+original_file=None   
 
 if __name__=="__main__":
     logger.debug("hotWordsCrawl starts at: "+str(datetime.now()))
