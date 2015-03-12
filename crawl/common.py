@@ -49,4 +49,17 @@ def listSubtract(fullList, subtractorList):
         fullList.remove(word)
 
 
+def writeLineResult(line, _file):
+    _file.writelines(line+"\r\n")
+    return
 
+def writeDictResult(_dict, _file):
+    for (word,pinyin) in _dict.items():
+        writeLineResult(word+"\t"+pinyin,_file)
+    return
+
+def writeListResult(_list, _file):
+    for single in _list:
+        writeLineResult(single, _file)
+    return
+ 
