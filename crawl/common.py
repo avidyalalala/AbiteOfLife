@@ -9,6 +9,12 @@ import sys
 import logging
 import logging.handlers
 
+def md5(str):
+    import hashlib
+    m = hashlib.md5()   
+    m.update(str.decode("utf-8"))
+    return m.hexdigest()
+
 def getRootPath():
     return "/home/admin/hotWord"
 
@@ -40,6 +46,7 @@ def initEncoding(encoding):
 def sendMail(target_file,timeStamp):
     logger.debug("start to send mail")
     mail_address=open(getRootPath()+"/mail_address.txt","r").readlines()
+    mail_address=map(lambda x:x.strip()+" ", mail_address)
     #os.system('cat '+target_file.name)
     logger.debug('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))
     os.system('uuencode '+target_file.name+' '+str(target_file.name)+'|mail -s "hotWords at '+timeStamp+'" '+"".join(mail_address))
@@ -63,3 +70,7 @@ def writeListResult(_list, _file):
         writeLineResult(single, _file)
     return
  
+if __name__=="__main__":
+    #_file=open("build.sh","r")
+    #sendMail(_file,"2015-03-16")
+    print(md5("a"))

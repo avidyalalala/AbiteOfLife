@@ -21,11 +21,12 @@ import common
 logger=common.getLogger("admin connector")
 
 hostName="http://10.189.226.214"
-#hostName="http://localhost:8080"
+hostName="http://10.32.183.138:8080"
 isAutoOpenLink="/input/hotword/autoflag.html"
-hotWordsCommitLink="/admin/hot/add/json.html"
+hotWordsCommitLink="/input/hotword/add/json.html"
 '''?hotsJson={%22hotWordsList%22:[{%22extra%22:{%22freq%22:1,%22pinyin%22:%22x+in%27q+ing%27m+ing%27sh+ang%27h+e%27t+u%22},%22word%22:%22%E6%96%B0%E6%B8%85%E6%98%8E%E4%B8%8A%E6%B2%B3%E5%9B%BE%22}],%22interval%22:1}
 '''
+
 
 def requestIt(link, encoding='utf-8'):
     opener=urllib2.build_opener()
@@ -60,12 +61,16 @@ def isCommitSucccess(jsonStr):
         return False
 
 def commitHots(_dict):
+    _key="theHotest"
     if(len(_dict)==0):
         logger.debug("u commit an empty hot words list")
         return False
     json=buidHotJson(_dict)
     logger.debug(json)
-    param={'hotsJson':json}
+    _otherKey=str(len(json))
+    logger.debug(_otherKey)
+    _md5=common.md5(_key+_otherKey)
+    param={'hotsJson':json,'key':_md5}
     url=hostName+hotWordsCommitLink
     #url=hostName+hotWordsCommitLink+"?hotsJson="+urllib.urlencode(json)
     try:

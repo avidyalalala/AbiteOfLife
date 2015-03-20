@@ -5,6 +5,8 @@
 import common
 from datetime import date, datetime 
 import time
+import sys
+import codecs
 
 import crawler
 import pinyinGenerator
@@ -25,7 +27,11 @@ def doDispatch():
     timeStamp=str(time.strftime("%Y-%m-%d-%H", time.localtime()))
 
     words_list=crawler.doCrawl(timeStamp)
-
+    '''test code'''
+    if(len(sys.argv)>1):
+        _file=codecs.open(sys.argv[1],"r","utf-8")
+        words_list=map(lambda x:x.strip(), _file.readlines())
+    '''test code finish'''
     rootPath=common.getRootPath()
     target_file=open(rootPath+"/hotWords."+timeStamp+".txt","w")
     '''the words will be commited into the hotword admin'''
