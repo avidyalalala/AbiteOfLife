@@ -17,8 +17,8 @@ class HotWords:
         self.RUID = 'hotwordsauo98spvcobqapub'
         self.RKEY = 'bFamk4hL#LPxGZ`nDbeFfea;1nu:'
         self.APPID = 'hotwords'
-        self.TEST_HOST = '10.101.104.132'
-        self.PRODUCTION_HOST = '10.101.104.132'# 'sync.aliyun.com'
+        self.TEST_HOST = '127.0.0.1'
+        self.PRODUCTION_HOST = '127.0.0.1'# 
         self.host = self.TEST_HOST
         self.conn = None
         self.method = None

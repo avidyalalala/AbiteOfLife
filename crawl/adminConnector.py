@@ -22,6 +22,7 @@ logger=common.getLogger("admin connector")
 
 hostName="http://10.189.226.214"
 hostName="http://10.32.183.138:8080"
+#hostName="http://input.yunos.com"
 isAutoOpenLink="/input/hotword/autoflag.html"
 hotWordsCommitLink="/input/hotword/add/json.html"
 '''?hotsJson={%22hotWordsList%22:[{%22extra%22:{%22freq%22:1,%22pinyin%22:%22x+in%27q+ing%27m+ing%27sh+ang%27h+e%27t+u%22},%22word%22:%22%E6%96%B0%E6%B8%85%E6%98%8E%E4%B8%8A%E6%B2%B3%E5%9B%BE%22}],%22interval%22:1}
