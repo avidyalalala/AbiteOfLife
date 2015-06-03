@@ -1,0 +1,10 @@
+*.swp
+.pyp
+.jpg
+.project
+.settings
+target
+*.log
+.DS_Store
+*/*.iml
+
