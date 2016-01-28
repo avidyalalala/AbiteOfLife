@@ -12,6 +12,7 @@ def handleCSV(provincePre, providerId, lines, car_prefix_index, vin_index,cen_in
     for line in lines:
 
         cells=line.split(",")
+        
         _len=len(cells)
         #第三位是车牌号前两位:京A
         prefix2=cells[car_prefix_index]
@@ -34,6 +35,13 @@ def handleCSV(provincePre, providerId, lines, car_prefix_index, vin_index,cen_in
         #车牌号第一位与第二位的对应关系 
         #licenseMap即{"渝":A:{"vin":{0:99...}}}中 渝字对应的map
         licenseMap=provincePre.get(provincePrefix,{})
+        #合并车型易和微车的校验规则，微车是-1 代表输入全部号码，车型易是99代表输入全部号码
+        if cells[vin_index]==str(-1):
+            print(prefix2)
+            cells[vin_index]="99"
+        if cells[cen_index]==str(-1):
+            cells[cen_index]="99"
+
         if licenseMap =={} or licenseMap.get(licenseLetter2,"")=="":
             rules={}
             temp={}
